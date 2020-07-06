@@ -23,12 +23,40 @@ class App extends React.Component {
     this.setState({todoItems: [...this.state.todoItems, newTask]});
   };
 
+  //This method toggles the strike-through for completed items in the list. The ternary for the actual strike-through is in Todo.js file 
+  checkComplete = taskID => {
+    this.setState({
+      //Go through each item in the list to find the one clicked = taskID
+      todoItems: this.state.todoItems.map(clickedItem => {
+        if(clickedItem.id === taskID) {
+          return {
+            ...clickedItem,
+            //Found clicked item, toggling true/false status below
+            completed: !clickedItem.completed
+          };
+        } else {
+          //Not the clicked item, return current object unchanged
+          return clickedItem;
+        }
+      })
+    });
+  };
+
+  //This method clears any entries on the list marked as 'Completed' via strike-through when the 'Clear Completed' button is pressed
+  clearEntries = () => {
+    this.setState({
+      todoItems: this.state.todoItems.filter(itemCompleted => {
+        return itemCompleted.completed === false;
+      })
+    });
+  };
+
   render() {
     return (
       <div>
         <h2>Todo App!</h2>
-        <TodoList theList={this.state.todoItems} />
-        <TodoForm addTodo={this.addTodo} />
+        <TodoList checkComplete={this.checkComplete} theList={this.state.todoItems} />
+        <TodoForm addTodo={this.addTodo} clearEntries={this.clearEntries} />
       </div>
     );
   }
